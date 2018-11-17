@@ -138,23 +138,13 @@ cd /etc/nginx/sites-available
 sudo vim default
 ```
 
-4. Modified the file adding the following lines is file and changed  ```server_name _;``` to ```server_name 35.238.65.15```.
+4. Modified the file adding the following server block to the end of the file.
 
-```
-listen 443 ssl;
-server_name 35.238.65.15;
-ssl_certificate /etc/nginx/ssl/nginx.crt;
-ssl_certificate_key /etc/nginx/ssl/nginx.key;
-```
-
-
-- Here is my nginx server block for your comparison
 ```
 server {
-    listen       80;
     listen 443 ssl;
 
-    server_name 35.238.65.15;
+    server_name _;
     ssl_certificate /etc/nginx/ssl/nginx.crt;
     ssl_certificate_key /etc/nginx/ssl/nginx.key;;
 
@@ -174,7 +164,6 @@ server {
     }
 }
 ```
-
 
 5.  Restart nginx
 
