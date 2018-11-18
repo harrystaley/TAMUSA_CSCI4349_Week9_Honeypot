@@ -1,26 +1,310 @@
 # CSCI4349 Week 9: Honeypot
 
+## Honeypot setup scripts
+
+I have created two setup scripts [gcloud_honeypot_setup.sh](./scripts/gcloud_honeypot_setup.sh) and [gcloud_mhn-admin_setup.sh](./scripts/gcloud_mhn-admin_setup.sh).
+
+You will need to either git clone or copy these scripts into your directory before use.
+
+first run ```gcloud init``` and follow the prompts to set up your project for more information consult the [google cloud documentation](https://cloud.google.com/sdk/docs/).
+
+our zone is ```us-central1-c```, our region is ```us-central1```, and our image is ```ubuntu-1404-trusty-v20181114 ```.
+
+The command for our honeypot install script is below.
+```
+sudo ./gcloud_mhn-admin_setup.sh <zone> <region> <image>
+```
+thus run
+```
+sudo ./gcloud_mhn-admin_setup.sh us-central1-c us-central1 ubuntu-1404-trusty-v20181114
+```
+our image is ```ubuntu-1404-trusty-v20181114``` and our mhn admin server ip address is ```35.238.65.15```
+
+The command for our honeypot install script is below.
+```
+sudo ./gcloud_honeypot_setup.sh <image> <mhn-admin-ip>
+```
+thus run
+```
+sudo ./gcloud_honeypot_setup.sh ubuntu-1404-trusty-v20181114 35.238.65.15
+```
+
 ## Which Honeypot(s) you deployed
 
-HONEYPOT | NAME | ZONE | MACHINE_TYPE 	| PREEMPTIBLE | INTERNAL_IP | EXTERNAL_IP | STATUS
+HONEYPOT | NAME | ZONE | MACHINE_TYPE 	| PREEMPTIBLE | INTERNAL_IP | EXTERNAL_IP | USER DOCUMENTATION
 -----|-----|------|--------------	|-------------|-------------|-------------|---------
-N/A 			| mhn-admin  					| us-central1-c | f1-micro  |             | 10.128.0.2  | 35.238.65.15   | RUNNING
-dionea 			| mhn-honeypot-dionaea  		| us-central1-c | f1-micro  |             | 10.128.0.3  | 35.202.115.178 | RUNNING
-wordpot 		| mhn-honeypot-wordpot  		| us-central1-c | f1-micro  |             | 10.128.0.4  | 35.238.4.126   | RUNNING
-shockpot 		| mhn-honeypot-shockpot  		| us-central1-c | f1-micro  |             | 10.128.0.5  | 35.202.178.69  | RUNNING
-dionea w. http 	| mhn-honeypot-diondeahttp  	| us-central1-c | f1-micro  |             | 10.128.0.6  | 35.224.95.32   | RUNNING
-snort 			| mhn-honeypot-snort  			| us-central1-c | f1-micro  |             | 10.128.0.7  | 104.197.157.56 | RUNNING
-kippo as juniper| mhn-honeypot-kippojuniper  	| us-central1-c | f1-micro  |             | 10.128.0.8  | 35.239.238.94  | RUNNING
+N/A 			| mhn-admin  					| us-central1-c | f1-micro  |             | 10.128.0.2  | 35.238.65.15   | [MHN Wiki](https://github.com/threatstream/mhn/wiki)
+dionea 			| mhn-honeypot-dionaea  		| us-central1-c | f1-micro  |             | 10.128.0.3  | 35.202.115.178 | [Dionea Docs](https://dionaea.readthedocs.io/en/latest/index.html)
+wordpot 		| mhn-honeypot-wordpot  		| us-central1-c | f1-micro  |             | 10.128.0.4  | 35.238.4.126   | [Wordpot Docs](https://github.com/gbrindisi/wordpot)
+shockpot 		| mhn-honeypot-shockpot  		| us-central1-c | f1-micro  |             | 10.128.0.5  | 35.202.178.69  | [Shockpot Docs](https://github.com/threatstream/shockpot)
+dionea w. http 	| mhn-honeypot-diondeahttp  	| us-central1-c | f1-micro  |             | 10.128.0.6  | 35.224.95.32   | [Dionea Docs](https://dionaea.readthedocs.io/en/latest/index.html)
+snort 			| mhn-honeypot-snort  			| us-central1-c | f1-micro  |             | 10.128.0.7  | 104.197.157.56 | [Snort Docs](http://manual-snort-org.s3-website-us-east-1.amazonaws.com/)
+kippo as juniper| mhn-honeypot-kippojuniper  	| us-central1-c | f1-micro  |             | 10.128.0.8  | 35.239.238.94  | [D]()
+
+### setting up wordpot
+
+```
+cd /opt/wordpot
+sudo pip install flask
+sudo pip install hpfeeds
+sudo python wordpot.py
+```
+
+### setting up snort
+The basic install from mhn get you some functionality to play with out of the box
+
 
 
 ## Attacks Executed
 
-- snort
+### snort
 ![screenshot](./images/honeypot_snort_nmap.gif)
 
-
+### dionea
 ![screenshot](./images/)
 
+### wordpot
+
+```
+wpscan -u http://35.238.4.126/
+```
+```
+[+] URL: http://35.238.4.126/
+[+] Started: Sun Nov 18 15:50:40 2018
+
+[+] Interesting header: SERVER: Apache/2.2.22 (Ubuntu)
+[+] XML-RPC Interface available under: http://35.238.4.126/xmlrpc.php   [HTTP 200]
+[+] Found an RSS Feed: #   [HTTP 0]
+
+[+] Enumerating WordPress version ...
+[!] The WordPress 'http://35.238.4.126/readme.html' file exists exposing a version number
+
+[+] WordPress version 2.8 (Released on 2009-06-11) identified from meta generator, readme
+[!] 27 vulnerabilities identified from the version number
+
+[!] Title: WordPress 2.5 - 3.3.1 XSS in swfupload
+    Reference: https://wpvulndb.com/vulnerabilities/5999
+    Reference: http://seclists.org/fulldisclosure/2012/Nov/51
+[i] Fixed in: 3.3.2
+
+[!] Title: WordPress 1.5.1 - 3.5 XMLRPC Pingback API Internal/External Port Scanning
+    Reference: https://wpvulndb.com/vulnerabilities/5988
+    Reference: https://github.com/FireFart/WordpressPingbackPortScanner
+    Reference: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2013-0235
+[i] Fixed in: 3.5.1
+
+[!] Title: WordPress 1.5.1 - 3.5 XMLRPC pingback additional issues
+    Reference: https://wpvulndb.com/vulnerabilities/5989
+    Reference: http://lab.onsec.ru/2013/01/wordpress-xmlrpc-pingback-additional.html
+
+[!] Title: WordPress 2.0 - 3.0.1 wp-includes/comment.php Bypass Spam Restrictions
+    Reference: https://wpvulndb.com/vulnerabilities/6009
+    Reference: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2010-5293
+[i] Fixed in: 3.0.2
+
+[!] Title: WordPress 2.0 - 3.0.1 Multiple Cross-Site Scripting (XSS) in request_filesystem_credentials()
+    Reference: https://wpvulndb.com/vulnerabilities/6010
+    Reference: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2010-5294
+[i] Fixed in: 3.0.2
+
+[!] Title: WordPress 2.0 - 3.0.1 Cross-Site Scripting (XSS) in wp-admin/plugins.php
+    Reference: https://wpvulndb.com/vulnerabilities/6011
+    Reference: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2010-5295
+[i] Fixed in: 3.0.2
+
+[!] Title: WordPress 2.0 - 3.0.1 wp-includes/capabilities.php Remote Authenticated Administrator Delete Action Bypass
+    Reference: https://wpvulndb.com/vulnerabilities/6012
+    Reference: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2010-5296
+[i] Fixed in: 3.0.2
+
+[!] Title: WordPress 2.0 - 3.0 Remote Authenticated Administrator Add Action Bypass
+    Reference: https://wpvulndb.com/vulnerabilities/6013
+    Reference: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2010-5297
+[i] Fixed in: 3.0
+
+[!] Title: WordPress 2.0.3 - 3.9.1 (except 3.7.4 / 3.8.4) CSRF Token Brute Forcing
+    Reference: https://wpvulndb.com/vulnerabilities/7528
+    Reference: https://core.trac.wordpress.org/changeset/29384
+    Reference: https://core.trac.wordpress.org/changeset/29408
+    Reference: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-5204
+    Reference: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-5205
+[i] Fixed in: 3.9.2
+
+[!] Title: WordPress <= 4.0 - Long Password Denial of Service (DoS)
+    Reference: https://wpvulndb.com/vulnerabilities/7681
+    Reference: http://www.behindthefirewalls.com/2014/11/wordpress-denial-of-service-responsible-disclosure.html
+    Reference: https://wordpress.org/news/2014/11/wordpress-4-0-1/
+    Reference: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-9034
+    Reference: https://www.rapid7.com/db/modules/auxiliary/dos/http/wordpress_long_password_dos
+    Reference: https://www.exploit-db.com/exploits/35413/
+    Reference: https://www.exploit-db.com/exploits/35414/
+[i] Fixed in: 4.0.1
+
+[!] Title: WordPress <= 4.0 - Server Side Request Forgery (SSRF)
+    Reference: https://wpvulndb.com/vulnerabilities/7696
+    Reference: http://www.securityfocus.com/bid/71234/
+    Reference: https://core.trac.wordpress.org/changeset/30444
+    Reference: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-9038
+[i] Fixed in: 4.0.1
+
+[!] Title: WordPress <= 4.4.2 - SSRF Bypass using Octal & Hexedecimal IP addresses
+    Reference: https://wpvulndb.com/vulnerabilities/8473
+    Reference: https://codex.wordpress.org/Version_4.5
+    Reference: https://github.com/WordPress/WordPress/commit/af9f0520875eda686fd13a427fd3914d7aded049
+    Reference: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-4029
+[i] Fixed in: 4.5
+
+[!] Title: WordPress 2.6.0-4.5.2 - Unauthorized Category Removal from Post
+    Reference: https://wpvulndb.com/vulnerabilities/8520
+    Reference: https://wordpress.org/news/2016/06/wordpress-4-5-3/
+    Reference: https://github.com/WordPress/WordPress/commit/6d05c7521baa980c4efec411feca5e7fab6f307c
+    Reference: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-5837
+[i] Fixed in: 4.5.3
+
+[!] Title: WordPress 2.5-4.6 - Authenticated Stored Cross-Site Scripting via Image Filename
+    Reference: https://wpvulndb.com/vulnerabilities/8615
+    Reference: https://wordpress.org/news/2016/09/wordpress-4-6-1-security-and-maintenance-release/
+    Reference: https://github.com/WordPress/WordPress/commit/c9e60dab176635d4bfaaf431c0ea891e4726d6e0
+    Reference: https://sumofpwn.nl/advisory/2016/persistent_cross_site_scripting_vulnerability_in_wordpress_due_to_unsafe_processing_of_file_names.html
+    Reference: http://seclists.org/fulldisclosure/2016/Sep/6
+    Reference: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-7168
+[i] Fixed in: 4.6.1
+
+[!] Title: WordPress 2.8-4.6 - Path Traversal in Upgrade Package Uploader
+    Reference: https://wpvulndb.com/vulnerabilities/8616
+    Reference: https://wordpress.org/news/2016/09/wordpress-4-6-1-security-and-maintenance-release/
+    Reference: https://github.com/WordPress/WordPress/commit/54720a14d85bc1197ded7cb09bd3ea790caa0b6e
+    Reference: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-7169
+[i] Fixed in: 4.6.1
+
+[!] Title: WordPress <= 4.7 - Post via Email Checks mail.example.com by Default
+    Reference: https://wpvulndb.com/vulnerabilities/8719
+    Reference: https://github.com/WordPress/WordPress/commit/061e8788814ac87706d8b95688df276fe3c8596a
+    Reference: https://wordpress.org/news/2017/01/wordpress-4-7-1-security-and-maintenance-release/
+    Reference: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-5491
+[i] Fixed in: 4.7.1
+
+[!] Title: WordPress 2.8-4.7 - Accessibility Mode Cross-Site Request Forgery (CSRF)
+    Reference: https://wpvulndb.com/vulnerabilities/8720
+    Reference: https://github.com/WordPress/WordPress/commit/03e5c0314aeffe6b27f4b98fef842bf0fb00c733
+    Reference: https://wordpress.org/news/2017/01/wordpress-4-7-1-security-and-maintenance-release/
+    Reference: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-5492
+[i] Fixed in: 4.7.1
+
+[!] Title: WordPress 2.3-4.8.3 - Host Header Injection in Password Reset
+    Reference: https://wpvulndb.com/vulnerabilities/8807
+    Reference: https://exploitbox.io/vuln/WordPress-Exploit-4-7-Unauth-Password-Reset-0day-CVE-2017-8295.html
+    Reference: http://blog.dewhurstsecurity.com/2017/05/04/exploitbox-wordpress-security-advisories.html
+    Reference: https://core.trac.wordpress.org/ticket/25239
+    Reference: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-8295
+
+[!] Title: WordPress 2.7.0-4.7.4 - Insufficient Redirect Validation
+    Reference: https://wpvulndb.com/vulnerabilities/8815
+    Reference: https://github.com/WordPress/WordPress/commit/76d77e927bb4d0f87c7262a50e28d84e01fd2b11
+    Reference: https://wordpress.org/news/2017/05/wordpress-4-7-5/
+    Reference: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-9066
+[i] Fixed in: 4.7.5
+
+[!] Title: WordPress 2.5.0-4.7.4 - Post Meta Data Values Improper Handling in XML-RPC
+    Reference: https://wpvulndb.com/vulnerabilities/8816
+    Reference: https://wordpress.org/news/2017/05/wordpress-4-7-5/
+    Reference: https://github.com/WordPress/WordPress/commit/3d95e3ae816f4d7c638f40d3e936a4be19724381
+    Reference: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-9062
+[i] Fixed in: 4.7.5
+
+[!] Title: WordPress 2.5.0-4.7.4 - Filesystem Credentials Dialog CSRF
+    Reference: https://wpvulndb.com/vulnerabilities/8818
+    Reference: https://wordpress.org/news/2017/05/wordpress-4-7-5/
+    Reference: https://github.com/WordPress/WordPress/commit/38347d7c580be4cdd8476e4bbc653d5c79ed9b67
+    Reference: https://sumofpwn.nl/advisory/2016/cross_site_request_forgery_in_wordpress_connection_information.html
+    Reference: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-9064
+[i] Fixed in: 4.7.5
+
+[!] Title: WordPress 2.3.0-4.8.1 - $wpdb->prepare() potential SQL Injection
+    Reference: https://wpvulndb.com/vulnerabilities/8905
+    Reference: https://wordpress.org/news/2017/09/wordpress-4-8-2-security-and-maintenance-release/
+    Reference: https://github.com/WordPress/WordPress/commit/70b21279098fc973eae803693c0705a548128e48
+    Reference: https://github.com/WordPress/WordPress/commit/fc930d3daed1c3acef010d04acc2c5de93cd18ec
+[i] Fixed in: 4.8.2
+
+[!] Title: WordPress 2.3.0-4.7.4 - Authenticated SQL injection
+    Reference: https://wpvulndb.com/vulnerabilities/8906
+    Reference: https://medium.com/websec/wordpress-sqli-bbb2afcc8e94
+    Reference: https://wordpress.org/news/2017/09/wordpress-4-8-2-security-and-maintenance-release/
+    Reference: https://github.com/WordPress/WordPress/commit/70b21279098fc973eae803693c0705a548128e48
+    Reference: https://wpvulndb.com/vulnerabilities/8905
+[i] Fixed in: 4.7.5
+
+[!] Title: WordPress <= 4.8.2 - $wpdb->prepare() Weakness
+    Reference: https://wpvulndb.com/vulnerabilities/8941
+    Reference: https://wordpress.org/news/2017/10/wordpress-4-8-3-security-release/
+    Reference: https://github.com/WordPress/WordPress/commit/a2693fd8602e3263b5925b9d799ddd577202167d
+    Reference: https://twitter.com/ircmaxell/status/923662170092638208
+    Reference: https://blog.ircmaxell.com/2017/10/disclosure-wordpress-wpdb-sql-injection-technical.html
+    Reference: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-16510
+[i] Fixed in: 4.8.3
+
+[!] Title: WordPress 1.5.0-4.9 - RSS and Atom Feed Escaping
+    Reference: https://wpvulndb.com/vulnerabilities/8967
+    Reference: https://wordpress.org/news/2017/11/wordpress-4-9-1-security-and-maintenance-release/
+    Reference: https://github.com/WordPress/WordPress/commit/f1de7e42df29395c3314bf85bff3d1f4f90541de
+    Reference: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-17094
+[i] Fixed in: 4.9.1
+
+[!] Title: WordPress <= 4.9.4 - Application Denial of Service (DoS) (unpatched)
+    Reference: https://wpvulndb.com/vulnerabilities/9021
+    Reference: https://baraktawily.blogspot.fr/2018/02/how-to-dos-29-of-world-wide-websites.html
+    Reference: https://github.com/quitten/doser.py
+    Reference: https://thehackernews.com/2018/02/wordpress-dos-exploit.html
+    Reference: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-6389
+
+[!] Title: WordPress <= 4.9.6 - Authenticated Arbitrary File Deletion
+    Reference: https://wpvulndb.com/vulnerabilities/9100
+    Reference: https://blog.ripstech.com/2018/wordpress-file-delete-to-code-execution/
+    Reference: http://blog.vulnspy.com/2018/06/27/Wordpress-4-9-6-Arbitrary-File-Delection-Vulnerbility-Exploit/
+    Reference: https://github.com/WordPress/WordPress/commit/c9dce0606b0d7e6f494d4abe7b193ac046a322cd
+    Reference: https://wordpress.org/news/2018/07/wordpress-4-9-7-security-and-maintenance-release/
+    Reference: https://www.wordfence.com/blog/2018/07/details-of-an-additional-file-deletion-vulnerability-patched-in-wordpress-4-9-7/
+    Reference: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-12895
+
+[+] WordPress theme in use: twentyeleven
+
+[+] Name: twentyeleven
+ |  Latest version: 2.8 
+ |  Last updated: 2018-05-17T00:00:00.000Z
+ |  Location: http://35.238.4.126/wp-content/themes/twentyeleven/
+ |  Readme: http://35.238.4.126/wp-content/themes/twentyeleven/readme.txt
+ |  Changelog: http://35.238.4.126/wp-content/themes/twentyeleven/changelog.txt
+ |  Style URL: http://35.238.4.126/wp-content/themes/twentyeleven/style.css
+ |  Referenced style.css: http://35.238.4.126/static/wp-content/themes/twentyeleven/style.css
+
+[+] Enumerating plugins from passive detection ...
+[+] No plugins found passively
+
+[+] Finished: Sun Nov 18 15:51:20 2018
+[+] Elapsed time: 00:00:39
+[+] Requests made: 391
+[+] Memory used: 26.168 MB
+
+```
+
+```
+MacBook-Pro-42:~ harrystaley$ nmap 35.238.4.126
+Starting Nmap 7.70 ( https://nmap.org ) at 2018-11-18 14:55 CST
+Nmap scan report for 126.4.238.35.bc.googleusercontent.com (35.238.4.126)
+Host is up (0.050s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+22/tcp  open     ssh
+80/tcp  open     http
+135/tcp filtered msrpc
+139/tcp filtered netbios-ssn
+445/tcp filtered microsoft-ds
+593/tcp filtered http-rpc-epmap
+
+Nmap done: 1 IP address (1 host up) scanned in 2.07 seconds
+
+```
 
 ## Any issues you encountered
 
@@ -100,11 +384,21 @@ harrystaley@mhn-admin:/opt/mhn$ sudo /etc/init.d/supervisor status
 ### Dionea Honeypot
 
 I do not see any payloads recorded in payloads report on mhn admin page even when i click to filer on dionea.capture.
-However when I navigate to the ```/var/dionaea/bistreams``` I see folders with files in them as seen below.
+However when I navigate to the ```/var/dionaea/bistreams``` I see activity.
 
-![](./images/honeypot_dionea_payloads_captured.png)
+![](./images/honeypot_dionea_traffic_captured.png)
 
-- TODO: investigate this issue and resolve this for hte honeyhpt.
+Looking at ```/var/dionaea``` I notice that files are located there even a file that I placed in wwwroot. I also can see files that were placed in the folders by attackers, but never registered as payloads per the screenshots below.
+
+![rtp payloads](./images/honeypot_dionea_rtp_payloads.png)
+
+![ftp payloads](./images/honeypot_dionea_ftp_payloads.png)
+
+It looks as though the automated version of dionea is not fixed and does not work correctly per the below blog post and I will be doing this in future installations.
+
+[Setting up dionea honeypot](https://www.attacusatlas.com/how-to-set-up-dionaea-honeypot-with-modern-honey-network-and-slack-alerts/)
+
+[Dionea documentation](https://dionaea.readthedocs.io/en/latest/index.html)
 
 ## A summary of the data collected: number of attacks, number of malware samples, etc.
 
