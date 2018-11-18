@@ -23,6 +23,9 @@ kippo as juniper| mhn-honeypot-kippojuniper  	| us-central1-c | f1-micro  |     
 
 
 ## Any issues you encountered
+
+
+### MHN Admin
 - I needed to either modify one of the shell scripts at first but I thien foudn tthe upstream of the repo from Threatstream located at [Trheatstream: MHN](https://github.com/threatstream/mhn) to be much better maintained than teh one located by [RedolentSun: mhn](https://github.com/RedolentSun/mhn.git)
 
 
@@ -94,7 +97,14 @@ harrystaley@mhn-admin:/opt/mhn$ sudo /etc/init.d/supervisor status
  is running
 ```
 
+### Dionea Honeypot
 
+I do not see any payloads recorded in payloads report on mhn admin page even when i click to filer on dionea.capture.
+However when I navigate to the ```/var/dionaea/bistreams``` I see folders with files in them as seen below.
+
+![](./images/honeypot_dionea_payloads_captured.png)
+
+- TODO: investigate this issue and resolve this for hte honeyhpt.
 
 ## A summary of the data collected: number of attacks, number of malware samples, etc.
 
