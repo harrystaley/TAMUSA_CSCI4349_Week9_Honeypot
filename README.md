@@ -2,6 +2,24 @@
 
 ## Which Honeypot(s) you deployed
 
+HONEYPOT | NAME | ZONE | MACHINE_TYPE 	| PREEMPTIBLE | INTERNAL_IP | EXTERNAL_IP | STATUS
+-----|-----|------|--------------	|-------------|-------------|-------------|---------
+N/A 			| mhn-admin  					| us-central1-c | f1-micro  |             | 10.128.0.2  | 35.238.65.15   | RUNNING
+dionea 			| mhn-honeypot-dionaea  		| us-central1-c | f1-micro  |             | 10.128.0.3  | 35.202.115.178 | RUNNING
+wordpot 		| mhn-honeypot-wordpot  		| us-central1-c | f1-micro  |             | 10.128.0.4  | 35.238.4.126   | RUNNING
+shockpot 		| mhn-honeypot-shockpot  		| us-central1-c | f1-micro  |             | 10.128.0.5  | 35.202.178.69  | RUNNING
+dionea w. http 	| mhn-honeypot-diondeahttp  	| us-central1-c | f1-micro  |             | 10.128.0.6  | 35.224.95.32   | RUNNING
+snort 			| mhn-honeypot-snort  			| us-central1-c | f1-micro  |             | 10.128.0.7  | 104.197.157.56 | RUNNING
+
+
+## Attacks Executed
+
+- snort
+![screenshot](./images/honeypot_snort_nmap.gif)
+
+
+![screenshot](./images/)
+
 
 ## Any issues you encountered
 - I needed to either modify one of the shell scripts at first but I thien foudn tthe upstream of the repo from Threatstream located at [Trheatstream: MHN](https://github.com/threatstream/mhn) to be much better maintained than teh one located by [RedolentSun: mhn](https://github.com/RedolentSun/mhn.git)
@@ -79,6 +97,8 @@ harrystaley@mhn-admin:/opt/mhn$ sudo /etc/init.d/supervisor status
 
 ## A summary of the data collected: number of attacks, number of malware samples, etc.
 
+My public IP Address - 72.177.183.80
+
 
 ## Any unresolved questions raised by the data collected
 
@@ -97,23 +117,12 @@ gcloud beta compute firewall-rules create mhn-allow-honeypot --direction=INGRESS
 gcloud compute instances create "mhn-honeypot-1" --machine-type "f1-micro" --subnet "default" --maintenance-policy "MIGRATE"  --scopes "https://www.googleapis.com/auth/devstorage.read_only","https://www.googleapis.com/auth/logging.write","https://www.googleapis.com/auth/monitoring.write","https://www.googleapis.com/auth/servicecontrol","https://www.googleapis.com/auth/service.management.readonly","https://www.googleapis.com/auth/trace.append" --tags "mhn-honeypot","http-server" --image "ubuntu-1404-trusty-v20171010" --image-project "ubuntu-os-cloud" --boot-disk-size "10" --boot-disk-type "pd-standard" --boot-disk-device-name "mhn-honeypot-1"
 ```
 
-### VM Details
-```
-NAME            			ZONE           MACHINE_TYPE  PREEMPTIBLE  INTERNAL_IP  EXTERNAL_IP     STATUS
-mhn-admin  					us-central1-c  f1-micro                   10.128.0.2   35.238.65.15    RUNNING
-mhn-honeypot-dionaea  		us-central1-c  f1-micro                   10.128.0.3   35.202.115.178  RUNNING
-mhn-honeypot-wordpot  		us-central1-c  f1-micro                   10.128.0.4   35.238.4.126    RUNNING
-mhn-honeypot-shockpot  		us-central1-c  f1-micro                   10.128.0.5   35.202.178.69   RUNNING
-mhn-honeypot-diondeahttp  	us-central1-c  f1-micro                   10.128.0.6   35.224.95.32    RUNNING
-mhn-honeypot-snort  		us-central1-c  f1-micro                   10.128.0.7   104.197.157.56  RUNNING
-
-```
-
 ## Self Signed SSL Cert setup
 
 You can get a simmilar tutorial at [Digital Ocean: Self Signed SSL cert on NGINX for Ubuntu 14.04](https://www.digitalocean.com/community/tutorials/how-to-create-an-ssl-certificate-on-nginx-for-ubuntu-14-04).
 
 1. I first logged into my admin server, made an ssl directory and ran the command to create my cert.
+
 ```
 gcloud compute ssh mhn-admin
 sudo mkdir /etc/nginx/ssl
