@@ -105,6 +105,7 @@ mhn-honeypot-dionaea  		us-central1-c  f1-micro                   10.128.0.3   3
 mhn-honeypot-wordpot  		us-central1-c  f1-micro                   10.128.0.4   35.238.4.126    RUNNING
 mhn-honeypot-shockpot  		us-central1-c  f1-micro                   10.128.0.5   35.202.178.69   RUNNING
 mhn-honeypot-diondeahttp  	us-central1-c  f1-micro                   10.128.0.6   35.224.95.32    RUNNING
+mhn-honeypot-snort  		us-central1-c  f1-micro                   10.128.0.7   104.197.157.56  RUNNING
 
 ```
 
