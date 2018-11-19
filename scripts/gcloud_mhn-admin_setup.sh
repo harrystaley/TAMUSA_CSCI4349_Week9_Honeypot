@@ -1,14 +1,40 @@
 #!/bin/bash
 
+if [ "$1" = "--help" ]
+then
+  echo "bash gcloud_mhn-admin_setup.sh <ZONE> <REGION> <IMAGE>"
+  exit 0
+fi
+if [ -z "$1" ]
+then
+    echo "Please provide the zone"
+    exit 0
+fi
+if [ -z "$2" ]
+then
+    echo "Please provide the region."
+    exit 0
+fi
+if [ -z "$3" ]
+then
+  echo "please provide the image"
+  exit 0
+fi
+if [ $# -eq 3 ]
+then
+  echo "This script takes only three parameters <ZONE> <REGION> <IMAGE>"
+	exit 0
+fi
+
 ZONE=$1
 REGION=$2
 IMAGE=$3
 
 #NOTE: Instructions for firewall install taken from codepath.org
 
-#Setting defualt region and zone
-gcloud config set compute/zone $ZONE
-gcloud config set compute/region $REGION
+	#Setting defualt region and zone
+	gcloud config set compute/zone $ZONE
+	gcloud config set compute/region $REGION
 
 #HONEYPOT ADMIN
 
@@ -24,6 +50,10 @@ sudo apt-get update
 sudo apt-get install git -y
 cd /opt
 sudo git clone https://github.com/RedolentSun/mhn.git
-cd mhn
+cd mhn/scripts
+
+#This changes the locaiton of where to get pyev due to a bug
+sudo sed -i -e 's|https://github.com/HurricaneLabs/pyev.git#egg=pyev|https://github.com/couozu/pyev.git#egg=pyev|g' install_hpfeeds.sh
+cd ..
 sudo ./install.sh 
 EOF

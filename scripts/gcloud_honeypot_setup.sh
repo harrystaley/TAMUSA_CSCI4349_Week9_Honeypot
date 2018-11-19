@@ -1,5 +1,28 @@
 #!/bin/bash
 
+
+if [ "$1" = "--help" ]
+then
+  echo "bash gcloud_honeypot_setup.sh <IMAGE> <MHN-ADMIN-IP>"
+  exit 0
+fi
+if [ -z "$1" ]
+then
+    echo "Please provide the zone"
+    exit 0
+fi
+if [ -z "$2" ]
+then
+    echo "Please provide the region."
+    exit 0
+fi
+if [ $# -eq 2 ]
+then
+  	echo "This script takes only two parameters <IMAGE> <MHN-ADMIN-IP>"
+	exit 0
+fi
+
+
 IMAGE=$1
 MHN-ADMIN-IP=$2
 #NOTE: Instructions for firewall install taken from codepath.org
@@ -58,8 +81,6 @@ gcloud compute instances create "mhn-honeypot-suricata" --machine-type "f1-micro
 gcloud compute ssh mhn-honeypot-suricata << EOF
 	wget "http://$MHN-ADMIN-IP/api/script/?text=true&script_id=2" -O deploy.sh && sudo bash deploy.sh http://$MHN-ADMIN-IP RWLXbcNr
 EOF
-
-
 
 gcloud compute instances create "mhn-honeypot-suricata" --machine-type "f1-micro" --subnet "default" --maintenance-policy "MIGRATE"  --scopes "https://www.googleapis.com/auth/devstorage.read_only","https://www.googleapis.com/auth/logging.write","https://www.googleapis.com/auth/monitoring.write","https://www.googleapis.com/auth/servicecontrol","https://www.googleapis.com/auth/service.management.readonly","https://www.googleapis.com/auth/trace.append" --tags "mhn-honeypot","http-server" --image $IMAGE --image-project "ubuntu-os-cloud" --boot-disk-size "10" --boot-disk-type "pd-standard" --boot-disk-device-name "mhn-honeypot-suricata"
 gcloud compute ssh mhn-honeypot-suricata << EOF

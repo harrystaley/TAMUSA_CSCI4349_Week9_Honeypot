@@ -1,6 +1,156 @@
 # CSCI4349 Week 9: Honeypot
 
-## Honeypot setup scripts
+## Honeypot Setup
+
+git clone this repo
+```
+git clone https://github.com/harrystaley/CSCI4349_Week9_Honeypot
+```
+open your terminal application and execute the following command
+```
+vagrant up
+vagrant ssh
+```
+wich should bring you to a new terminal prompt on your newly created linux box
+```
+cd /vagrant
+```
+initialize google cloud
+```
+gcloud init
+```
+logina nd instert the name of your new project.
+
+Setting defualt region and zone
+```
+gcloud config set compute/zone us-central1-c
+gcloud config set compute/region us-central1
+```
+First, create a firewall rule to allow ingress traffic on TCP ports 3000, 10000, 80, and 443. The following command can be used to do this via the command line:
+```
+gcloud beta compute firewall-rules create mhn-allow-admin --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:3000,tcp:10000,tcp:80,tcp:443 --source-ranges=0.0.0.0/0 --target-tags=mhn-admin
+```
+create the VM instance mhn-admin
+```
+gcloud compute instances create "mhn-admin" --machine-type "f1-micro" --subnet "default" --maintenance-policy "MIGRATE"  --scopes "https://www.googleapis.com/auth/devstorage.read_only","https://www.googleapis.com/auth/logging.write","https://www.googleapis.com/auth/monitoring.write","https://www.googleapis.com/auth/servicecontrol","https://www.googleapis.com/auth/service.management.readonly","https://www.googleapis.com/auth/trace.append" --tags "mhn-admin","http-server","https-server" --image $IMAGE --image-project "ubuntu-os-cloud" --boot-disk-size "10" --boot-disk-type "pd-standard" --boot-disk-device-name "mhn-admin"
+```
+you should now see a new instance created writing down the <strong>external ip address<strong>.
+```
+NAME              ZONE           MACHINE_TYPE  PREEMPTIBLE  INTERNAL_IP  EXTERNAL_IP    STATUS
+mhn-admin         us-central1-c  f1-micro                   10.128.0.11  35.192.133.42  RUNNING
+```
+now ssh into the instance we just created
+```
+gcloud compute ssh mhn-admin 
+```
+update packages and install git
+```
+sudo apt-get update
+sudo apt-get install git -y
+```
+navigated to ```/opt/mhn/scrpts``` and modified by running ```sudo vim install_hpfeeds.sh```
+```
+cd /opt/mhn/scripts
+```
+if they exist change either ```sudo git clone https://github.com/RedolentSun/pyev.git#egg=pyev```  or ```sudo git clone https://github.com/HurricaneLabs/pyev.git#egg=pyev```
+to ```sudo git clone https://github.com/couozu/pyev.git#egg=pyev```
+
+navigate back over to ```/opt``` and clone the required repo
+```
+cd /opt
+sudo git clone https://github.com/RedolentSun/mhn.git
+cd mhn
+sudo ./install.sh
+```
+you will then be prompted several time
+```Do you wish to run in Debug mode? y/n : ```n
+```Superuser email:``` You can use any email -- this will be your username to login to the admin console.
+```Superuser password:``` Choose any password -- you'll be asked to confirm.
+the script will run more and you can then accept the defaults or n for each prompt.
+```
+Server base url ["http://#.#.#.#"]:
+Honeymap url ["http://#.#.#.#:3000"]:
+Mail server address ["localhost"]:
+Mail server port [25]:
+Use TLS for email?: y/n n
+Use SSL for email?: y/n n
+Mail server username [""]:
+Mail server password [""]:
+Mail default sender [""]:
+Path for log file ["/var/log/mhn/mhn.log"]:
+```
+you will then be prompted again inc which case you will answer n.
+```
+Would you like to integrate with Splunk? (y/n) n
+Would you like to install ELK? (y/n) n
+```
+Now lets double check that all of our services are up and running.
+```
+sudo /etc/init.d/nginx status
+sudo /etc/init.d/supervisor status
+sudo supervisorctl status
+```
+once all three commands are finished you should see the below statuses.
+```
+user@precise64:/opt/mhn/scripts$ sudo /etc/init.d/nginx status
+ * nginx is running
+user@precise64:/opt/mhn/scripts$ sudo /etc/init.d/supervisor status
+ is running
+user@precise64:/opt/mhn/scripts$ sudo supervisorctl status
+geoloc                           RUNNING    pid 31443, uptime 0:00:12
+honeymap                         RUNNING    pid 30826, uptime 0:08:54
+hpfeeds-broker                   RUNNING    pid 10089, uptime 0:36:42
+mhn-celery-beat                  RUNNING    pid 29909, uptime 0:18:41
+mhn-celery-worker                RUNNING    pid 29910, uptime 0:18:41
+mhn-collector                    RUNNING    pid 7872,  uptime 0:18:41
+mhn-uwsgi                        RUNNING    pid 29911, uptime 0:18:41
+mnemosyne                        RUNNING    pid 28173, uptime 0:30:08
+```
+we are all set to start installing our honeypots.
+
+now we have a choice you can either create the honeypots manually or use a handy script that I have created that will give you the most popular honeypots.
+
+### Manual Setup
+we will next set our firewall rules for our honeypots.
+```
+gcloud beta compute firewall-rules create mhn-allow-honeypot --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=all --source-ranges=0.0.0.0/0 --target-tags=mhn-honeypot
+```
+next it is time to create our honeypots substituting mhn-honeypot-1 for whatever we want to name htis honeypot.
+```
+$ gcloud compute instances create "mhn-honeypot-1" --machine-type "f1-micro" --subnet "default" --maintenance-policy "MIGRATE"  --scopes "https://www.googleapis.com/auth/devstorage.read_only","https://www.googleapis.com/auth/logging.write","https://www.googleapis.com/auth/monitoring.write","https://www.googleapis.com/auth/servicecontrol","https://www.googleapis.com/auth/service.management.readonly","https://www.googleapis.com/auth/trace.append" --tags "mhn-honeypot","http-server" --image "ubuntu-1404-trusty-v20171010" --image-project "ubuntu-os-cloud" --boot-disk-size "10" --boot-disk-type "pd-standard" --boot-disk-device-name "mhn-honeypot-1"
+```
+ssh into the honeypot
+```
+gcloud compute ssh mhn-honeypot-1
+```
+
+#### Final Steps
+Login to your MHN server web app.
+Click the "Deploy" link in the upper left hand corner.
+Select a type of honeypot from the drop down menu (e.g. "Ubuntu Dionaea").
+Copy the deployment command.
+Go back to your terminal and run this command as root
+```
+sudo <honeypot command>
+```
+You can continue to create as many honeypots as you like by following simply skipping the first step in this section.
+
+### Script Setup
+navigate to ```/vagrant/scripts```
+run the following command substituting in the ip address of your admin server and the image used in your previous install.
+Since our example image was ```ubuntu-1404-trusty-v20181114``` and our mhn admin server ip address is ```35.238.65.15```
+and the command for our honeypot install script is below.
+```
+sudo ./gcloud_honeypot_setup.sh <image> <mhn-admin-ip>
+```
+we are going to run:
+```
+sudo ./gcloud_honeypot_setup.sh ubuntu-1404-trusty-v20181114 35.238.65.15
+```
+
+You should now see lots of honeypots in your mhn-admin sensors panel.
+
+## Honeypot Complete Automation
 
 I have created two setup scripts [gcloud_honeypot_setup.sh](./scripts/gcloud_honeypot_setup.sh) and [gcloud_mhn-admin_setup.sh](./scripts/gcloud_mhn-admin_setup.sh).
 
@@ -29,7 +179,7 @@ thus run
 sudo ./gcloud_honeypot_setup.sh ubuntu-1404-trusty-v20181114 35.238.65.15
 ```
 
-## Which Honeypot(s) you deployed
+## Honeypots Deployed
 
 HONEYPOT | NAME | ZONE | MACHINE_TYPE 	| PREEMPTIBLE | INTERNAL_IP | EXTERNAL_IP | DOCUMENTATION
 -----|-----|------|--------------	|-------------|-------------|-------------|---------
