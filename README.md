@@ -573,23 +573,40 @@ It looks as though the automated version of dionea is not fixed and does not wor
 
 My public IP Address - 72.177.183.80
 
+NO |    Hostname   | IP | Honeypot  |  UUID  |  Attacks
+---|---------------|---|------------|--------|---------
+1  |    mhn-honeypot-dionaea  |  35.202.115.178 | dionaea   |  5025184c-ea65-11e8-8445-42010a800002  |  9188
+2  |    mhn-honeypot-wordpot  |  35.238.4.126   | wordpot   |  a96501fa-ea66-11e8-8445-42010a800002  |  3
+3  |   mhn-honeypot-shockpot  | 35.202.178.69  | shockpot   | 4ad1e736-ea69-11e8-8445-42010a800002   | 0
+4  |    mhn-honeypot-diondeahttp |   35.224.95.32 |   dionaea |    ba15e39a-eaaa-11e8-8445-42010a800002 |   5926
+5  |    mhn-honeypot-snort | 104.197.157.56 | snort |  c34a3560-eac3-11e8-8445-42010a800002  |  1084
+6  |    mhn-honeypot-kippojuniper |  35.239.238.94  | kippo |  d39be94c-eafd-11e8-8445-42010a800002 |   53
+7  |    mhn-honeypot-dionaea  |  35.202.115.178 | dionaea   |  7fd1257a-eb02-11e8-8445-42010a800002 |   0
+8  |    mhn-honeypot-wordpot  |  35.238.4.126   | wordpot   |  ed0acb7c-eb71-11e8-8445-42010a800002  |  0
+9  |    mhn-honeypot-suricata |  35.192.85.103  | suricata  |  731adbc2-eb85-11e8-8445-42010a800002  |  1006
+
+Some of the honeypots captured more data and payloads than others with some not capturing anything.
+
+Here are the stats from the last 24 hours taken on Sunday, Nov 18 23:46
+![Attacks in the last 24 hours as of 18 NOv, 2018, 23:46.](honeypot_24hr_stats.png)
+
+The only honeypots to caputre payload data were snort and surricata. Diondea should have captured data but it had as mentioned previously where the payloads where not logged.
+
+From my observations diondea had five pieces of malware put onto the server.
+
+If given more time I could do a deeper dive into the analytics of the data.
+
+I would like to have had a week for data collection and a week for analysis.
+
+My data is located in [session.json](./data/session.json).
 
 ## Any unresolved questions raised by the data collected
 
+I wonder how many pieces of malware I would have collected if I would hae had a working diondea honypot.
 
-## Honeypot Details
+It would be nice if there were charts that gave more insights into the trends of the malware/attackers. I suppose that this paltform could be extended to use deeper analytics such as visualization packages like d3.js, ect.
 
-### Firewall Setup
 
-```
-gcloud beta compute firewall-rules create mhn-allow-honeypot --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=all --source-ranges=0.0.0.0/0 --target-tags=mhn-honeypot
-```
-
-### Honeypot VM Setup
-
-```
-gcloud compute instances create "mhn-honeypot-1" --machine-type "f1-micro" --subnet "default" --maintenance-policy "MIGRATE"  --scopes "https://www.googleapis.com/auth/devstorage.read_only","https://www.googleapis.com/auth/logging.write","https://www.googleapis.com/auth/monitoring.write","https://www.googleapis.com/auth/servicecontrol","https://www.googleapis.com/auth/service.management.readonly","https://www.googleapis.com/auth/trace.append" --tags "mhn-honeypot","http-server" --image "ubuntu-1404-trusty-v20171010" --image-project "ubuntu-os-cloud" --boot-disk-size "10" --boot-disk-type "pd-standard" --boot-disk-device-name "mhn-honeypot-1"
-```
 
 ## Self Signed SSL Cert setup
 
