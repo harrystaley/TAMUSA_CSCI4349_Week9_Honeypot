@@ -31,7 +31,7 @@ sudo ./gcloud_honeypot_setup.sh ubuntu-1404-trusty-v20181114 35.238.65.15
 
 ## Which Honeypot(s) you deployed
 
-HONEYPOT | NAME | ZONE | MACHINE_TYPE 	| PREEMPTIBLE | INTERNAL_IP | EXTERNAL_IP | USER DOCUMENTATION
+HONEYPOT | NAME | ZONE | MACHINE_TYPE 	| PREEMPTIBLE | INTERNAL_IP | EXTERNAL_IP | DOCUMENTATION
 -----|-----|------|--------------	|-------------|-------------|-------------|---------
 N/A 			| mhn-admin  					| us-central1-c | f1-micro  |             | 10.128.0.2  | 35.238.65.15   | [MHN Wiki](https://github.com/threatstream/mhn/wiki)
 dionea 			| mhn-honeypot-dionaea  		| us-central1-c | f1-micro  |             | 10.128.0.3  | 35.202.115.178 | [Dionea Docs](https://dionaea.readthedocs.io/en/latest/index.html)
@@ -39,7 +39,8 @@ wordpot 		| mhn-honeypot-wordpot  		| us-central1-c | f1-micro  |             | 
 shockpot 		| mhn-honeypot-shockpot  		| us-central1-c | f1-micro  |             | 10.128.0.5  | 35.202.178.69  | [Shockpot Docs](https://github.com/threatstream/shockpot)
 dionea w. http 	| mhn-honeypot-diondeahttp  	| us-central1-c | f1-micro  |             | 10.128.0.6  | 35.224.95.32   | [Dionea Docs](https://dionaea.readthedocs.io/en/latest/index.html)
 snort 			| mhn-honeypot-snort  			| us-central1-c | f1-micro  |             | 10.128.0.7  | 104.197.157.56 | [Snort Docs](http://manual-snort-org.s3-website-us-east-1.amazonaws.com/)
-kippo as juniper| mhn-honeypot-kippojuniper  	| us-central1-c | f1-micro  |             | 10.128.0.8  | 35.239.238.94  | [D]()
+kippo as juniper| mhn-honeypot-kippojuniper  	| us-central1-c | f1-micro  |             | 10.128.0.8  | 35.239.238.94  | [Kippo Juniper Docs](https://github.com/gregcmartin/Kippo_JunOS)
+surcata			| mhn-honeypot-suricata  		| us-central1-c | f1-micro  |             | 10.128.0.9  | 35.192.85.103  | [suricata](https://suricata-ids.org/docs/)
 
 ### setting up wordpot
 
@@ -53,15 +54,22 @@ sudo python wordpot.py
 ### setting up snort
 The basic install from mhn get you some functionality to play with out of the box
 
-
-
 ## Attacks Executed
 
 ### snort
+
 ![screenshot](./images/honeypot_snort_nmap.gif)
 
 ### dionea
-![screenshot](./images/)
+
+![](./images/honeypot_dionea_traffic_captured.png)
+
+Looking at ```/var/dionaea``` I notice that files are located there even a file that I placed in wwwroot. I also can see files that were placed in the folders by attackers, but never registered as payloads in mhn admin.
+
+![rtp payloads](./images/honeypot_dionea_rtp_payloads.png)
+
+![ftp payloads](./images/honeypot_dionea_ftp_payloads.png)
+
 
 ### wordpot
 
@@ -287,7 +295,7 @@ wpscan -u http://35.238.4.126/
 [+] Memory used: 26.168 MB
 
 ```
-
+nmap
 ```
 MacBook-Pro-42:~ harrystaley$ nmap 35.238.4.126
 Starting Nmap 7.70 ( https://nmap.org ) at 2018-11-18 14:55 CST
@@ -303,7 +311,6 @@ PORT    STATE    SERVICE
 593/tcp filtered http-rpc-epmap
 
 Nmap done: 1 IP address (1 host up) scanned in 2.07 seconds
-
 ```
 
 ## Any issues you encountered

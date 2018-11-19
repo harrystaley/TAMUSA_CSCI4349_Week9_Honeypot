@@ -51,18 +51,4 @@ gcloud compute instances create "mhn-honeypot-kippojuniper" --machine-type "f1-m
 gcloud compute ssh mhn-honeypot-kippojuniper << EOF
 	wget "http://$MHN-ADMIN-IP/api/script/?text=true&script_id=10" -O deploy.sh && sudo bash deploy.sh http://$MHN-ADMIN-IP RWLXbcNr
 EOF
-#--------------------------
-#NOTE: In order to change the image that is used you only need to change the variable
-gcloud compute instances create "mhn-honeypot-suricata" --machine-type "f1-micro" --subnet "default" --maintenance-policy "MIGRATE"  --scopes "https://www.googleapis.com/auth/devstorage.read_only","https://www.googleapis.com/auth/logging.write","https://www.googleapis.com/auth/monitoring.write","https://www.googleapis.com/auth/servicecontrol","https://www.googleapis.com/auth/service.management.readonly","https://www.googleapis.com/auth/trace.append" --tags "mhn-honeypot","http-server" --image $IMAGE --image-project "ubuntu-os-cloud" --boot-disk-size "10" --boot-disk-type "pd-standard" --boot-disk-device-name "mhn-honeypot-suricata"
-#ssh into your newly created honeypot
-gcloud compute ssh mhn-honeypot-suricata << EOF
-	wget "http://$MHN-ADMIN-IP/api/script/?text=true&script_id=2" -O deploy.sh && sudo bash deploy.sh http://$MHN-ADMIN-IP RWLXbcNr
-EOF
-
-
-
-gcloud compute instances create "mhn-honeypot-suricata" --machine-type "f1-micro" --subnet "default" --maintenance-policy "MIGRATE"  --scopes "https://www.googleapis.com/auth/devstorage.read_only","https://www.googleapis.com/auth/logging.write","https://www.googleapis.com/auth/monitoring.write","https://www.googleapis.com/auth/servicecontrol","https://www.googleapis.com/auth/service.management.readonly","https://www.googleapis.com/auth/trace.append" --tags "mhn-honeypot","http-server" --image $IMAGE --image-project "ubuntu-os-cloud" --boot-disk-size "10" --boot-disk-type "pd-standard" --boot-disk-device-name "mhn-honeypot-suricata"
-gcloud compute ssh mhn-honeypot-suricata << EOF
-	wget "http://$MHN-ADMIN-IP/api/script/?text=true&script_id=13" -O deploy.sh && sudo bash deploy.sh http://$MHN-ADMIN-IP RWLXbcNr
-EOF
 
