@@ -1,6 +1,6 @@
 # CSCI4349 Week 9: Honeypot
 
-## Honeypot Setup
+## MANUAL HONEYPOT SETUP
 
 git clone this repo
 ```
@@ -19,7 +19,7 @@ initialize google cloud
 ```
 gcloud init
 ```
-logina nd instert the name of your new project.
+login and instert the name of your new project.
 
 Setting defualt region and zone
 ```
@@ -110,7 +110,7 @@ we are all set to start installing our honeypots.
 
 now we have a choice you can either create the honeypots manually or use a handy script that I have created that will give you the most popular honeypots.
 
-### Manual Setup
+### complete Manual Setup
 we will next set our firewall rules for our honeypots.
 ```
 gcloud beta compute firewall-rules create mhn-allow-honeypot --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=all --source-ranges=0.0.0.0/0 --target-tags=mhn-honeypot
@@ -150,13 +150,25 @@ sudo ./gcloud_honeypot_setup.sh ubuntu-1404-trusty-v20181114 35.238.65.15
 
 You should now see lots of honeypots in your mhn-admin sensors panel.
 
-## Honeypot Complete Automation
+## HONEYPOT SETUP WITH COMPLETE AUTOMATION
 
 I have created two setup scripts [gcloud_honeypot_setup.sh](./scripts/gcloud_honeypot_setup.sh) and [gcloud_mhn-admin_setup.sh](./scripts/gcloud_mhn-admin_setup.sh).
 
-You will need to either git clone or copy these scripts into your directory before use.
+git clone this repo
+```
+git clone https://github.com/harrystaley/CSCI4349_Week9_Honeypot
+```
+open your terminal application and execute the following command
+```
+vagrant up
+vagrant ssh
+```
+wich should bring you to a new terminal prompt on your newly created linux box
+```
+cd /vagrant
+```
 
-first run ```gcloud init``` and follow the prompts to set up your project for more information consult the [google cloud documentation](https://cloud.google.com/sdk/docs/).
+run ```gcloud init``` and follow the prompts to set up your project for more information consult the [google cloud documentation](https://cloud.google.com/sdk/docs/).
 
 our zone is ```us-central1-c```, our region is ```us-central1```, and our image is ```ubuntu-1404-trusty-v20181114 ```.
 
