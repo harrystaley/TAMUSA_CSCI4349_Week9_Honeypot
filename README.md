@@ -2,40 +2,66 @@
 
 ## Project Overview
 
-This repository is a part of the CSCI4349 Week 9 penetration testing course at Texas A&M University-San Antonio. The main objective of this project is to provide a comprehensive guide for deploying a honeypot using Vagrant and Google Cloud. A honeypot is a computer security mechanism set to detect, deflect, or study attempts at unauthorized use of information systems. This guide includes instructions for configuring a virtual machine and setting up necessary firewall rules to simulate and analyze network attacks.
+This repository is part of the CSCI4349 Week 9 penetration testing course at Texas A&M University-San Antonio. It provides a comprehensive manual setup guide for deploying a honeypot using Vagrant and Google Cloud. The purpose of this project is to simulate and analyze network attacks in a controlled environment, allowing students to understand the dynamics of cybersecurity threats and defenses.
 
-## Setup and Installation
+The project is structured as follows:
+- **Documentation**: Contains the setup guide and any additional notes or resources needed.
+- **Scripts**: Includes scripts to automate parts of the setup and configuration process.
+- **Vagrantfile**: Configuration file for setting up the virtual environment using Vagrant.
+- **Firewall Rules**: Configuration files for setting up and managing firewall rules on Google Cloud.
 
-**Dependencies**:
-- Vagrant
-- Google Cloud SDK
+## Setup and Installation Instructions
 
-**Steps**:
-1. Install the latest version of Vagrant and Google Cloud SDK on your system.
-2. Clone this repository to your local machine.
-3. Navigate to the cloned directory.
-4. Execute the Vagrantfile using the command `vagrant up`.
-5. Follow the instructions provided in the guide to configure your Google Cloud account and setup the virtual machine.
-6. Setup the necessary firewall rules as per the instructions in the guide.
+### Prerequisites
+- Vagrant: Ensure you have Vagrant installed on your machine. Download it from [Vagrant's official site](https://www.vagrantup.com/downloads).
+- VirtualBox: Vagrant requires a virtualization tool, and VirtualBox is recommended. Download it from [VirtualBox's official site](https://www.virtualbox.org/wiki/Downloads).
+- Google Cloud Account: Ensure you have access to a Google Cloud account. If you do not have one, you can sign up at [Google Cloud](https://cloud.google.com/).
+
+### Installation Steps
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/yourusername/TAMUSA_CSCI4349_Week9_Honeypot.git
+   cd TAMUSA_CSCI4349_Week9_Honeypot
+   ```
+
+2. **Set up the Virtual Machine**
+   ```bash
+   vagrant up
+   ```
+
+3. **Access the Virtual Machine**
+   ```bash
+   vagrant ssh
+   ```
+
+4. **Configure Google Cloud Firewall Rules**
+   - Navigate to the Google Cloud Console.
+   - Go to the Firewall rules section under VPC network.
+   - Create new rules as specified in the `firewall-rules.md` documentation.
+
+5. **Deploy the Honeypot**
+   - Follow the detailed instructions in the `honeypot-setup.md` to deploy your honeypot within the virtual machine.
 
 ## Usage Examples
 
-Once the honeypot is set up, it can be used to simulate network attacks for educational purposes. The following are a few examples of how you can use this setup:
-
-- Test the effectiveness of your network security measures.
-- Analyze the behavior of attackers and develop strategies to counter them.
-- Study different types of network attacks and their impact.
+Once your honeypot is set up, you can start simulating attacks:
+- Try probing the honeypot from another machine to see how it logs the attempts.
+- Analyze the incoming traffic using tools like Wireshark.
 
 ## Contribution Guidelines
 
-We encourage you to contribute to this project! Please ensure that you adhere to the following guidelines:
-
-- Fork the project.
-- Create a new branch for each feature or improvement.
-- Ensure that your code adheres to the existing style.
-- Include appropriate tests if applicable.
-- Submit a pull request.
+Contributions are welcome, especially from students and faculty members. To contribute:
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature-branch`).
+3. Make your changes and commit them (`git commit -am 'Add some feature'`).
+4. Push to the branch (`git push origin feature-branch`).
+5. Create a new Pull Request.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+
+---
+
+For more information or support, contact the repository administrators or course instructors.
