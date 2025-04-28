@@ -120,7 +120,7 @@ class Configuration(_messages.Message):
   built. Users create new Revisions by updating the Configuration's spec. The
   "latest created" revision's name is available under status, as is the
   "latest ready" revision's name. See also: https://github.com/knative/serving
-  /blob/master/docs/spec/overview.md#configuration
+  /blob/main/docs/spec/overview.md#configuration
 
   Fields:
     apiVersion: The API version for this call such as "v1alpha1".
